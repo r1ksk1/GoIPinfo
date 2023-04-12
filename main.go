@@ -6,6 +6,13 @@ import (
     "net/http"
 )
 
+const (
+    dnsServer1 = "1.1.1.1"
+    dnsServer2 = "1.0.0.1"
+    dnsServer1 = "8.8.8.8"
+    dnsServer2 = "8.8.4.4"
+)
+
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         ipAddr := r.RemoteAddr
@@ -19,19 +26,25 @@ func main() {
         fmt.Fprintf(w, "Client language: %s\n", language)
     })
 
-    http.ListenAndServe(":8448", nil)
+    http.ListenAndServe(":8080", nil)
 }
 
 func lookupHostname(ipAddr string) (string, error) {
-    addr, err := net.ResolveIPAddr("ip", ipAddr)
-    if err != nil {
-        return "", err
+    servers := []string{dnsServer1, dnsServer2, dnsServer3, dnsServer4}
+    for _, server := range servers {
+        config := &net.ResolverConfig{Nameservers: []string{server}}
+        resolver := &net.Resolver{Config: config}
+
+        addr, err := net.ResolveIPAddr("ip", ipAddr)
+        if err != nil {
+            return "", err
+        }
+
+        names, err := resolver.LookupAddr(addr.String())
+        if err == nil && len(names) > 0 {
+            return names[0], nil
+        }
     }
 
-    names, err := net.LookupAddr(addr.String())
-    if err != nil || len(names) == 0 {
-        return "", err
-    }
-
-    return names[0], nil
+    return "", fmt.Errorf("could not resolve hostname for IP address %s", ipAddr)
 }
