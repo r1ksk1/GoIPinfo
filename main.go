@@ -29,7 +29,7 @@ func main() {
 		fmt.Fprintf(w, "Client language: %s\n", language)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8448", nil)
 }
 
 func lookupHostname(ipAddr string) (string, error) {
