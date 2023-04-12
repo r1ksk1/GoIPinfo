@@ -1,4 +1,4 @@
-# GoIPinfo
+# goipinfo
 Example Go IP info Web Server
 
 ## How to build container
