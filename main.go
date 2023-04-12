@@ -7,10 +7,10 @@ import (
 )
 
 const (
-    dnsServer1 = "1.1.1.1"
-    dnsServer2 = "1.0.0.1"
-    dnsServer3 = "8.8.8.8"
-    dnsServer4 = "8.8.4.4"
+    dnsServer1 = "8.8.8.8"
+    dnsServer2 = "8.8.4.4"
+    dnsServer3 = "1.1.1.1"
+    dnsServer4 = "1.0.0.1"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
         fmt.Fprintf(w, "Client language: %s\n", language)
     })
 
-    http.ListenAndServe(":8080", nil)
+    http.ListenAndServe(":8448", nil)
 }
 
 func lookupHostname(ipAddr string) (string, error) {
