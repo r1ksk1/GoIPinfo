@@ -40,7 +40,7 @@ func lookupHostname(ipAddr string) (string, error) {
             return "", err
         }
 
-        names, err := resolver.LookupAddr(addr.String())
+        names, err := resolver.LookupAddr(context.Background(), addr.String())
         if err == nil && len(names) > 0 {
             return names[0], nil
         }
