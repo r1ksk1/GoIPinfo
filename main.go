@@ -4,6 +4,7 @@ import (
     "fmt"
     "net"
     "net/http"
+    "strings"
 )
 
 const (
@@ -26,23 +27,30 @@ func main() {
         fmt.Fprintf(w, "Client language: %s\n", language)
     })
 
-    http.ListenAndServe(":8080", nil)
+    http.ListenAndServe(":8448", nil)
 }
 
 func lookupHostname(ipAddr string) (string, error) {
     servers := []string{dnsServer1, dnsServer2, dnsServer3, dnsServer4}
     for _, server := range servers {
-        config := &net.ResolverConfig{Nameservers: []string{server}}
-        resolver := &net.Resolver{Config: config}
+        resolver := &net.Resolver{
+            PreferGo: true,
+            Dial: func(_, address string) (net.Conn, error) {
+                d := net.Dialer{}
+                return d.Dial("udp", net.JoinHostPort(server, "53"))
+            },
+        }
 
         addr, err := net.ResolveIPAddr("ip", ipAddr)
         if err != nil {
             return "", err
         }
 
-        names, err := resolver.LookupAddr(context.Background(), addr.String())
+        names, err := resolver.LookupAddr(nil, addr.IP.String())
         if err == nil && len(names) > 0 {
-            return names[0], nil
+            // remove trailing period from hostname
+            hostname := strings.TrimSuffix(names[0], ".")
+            return hostname, nil
         }
     }
 
