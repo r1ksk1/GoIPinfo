@@ -9,8 +9,8 @@ import (
 const (
     dnsServer1 = "1.1.1.1"
     dnsServer2 = "1.0.0.1"
-    dnsServer1 = "8.8.8.8"
-    dnsServer2 = "8.8.4.4"
+    dnsServer3 = "8.8.8.8"
+    dnsServer4 = "8.8.4.4"
 )
 
 func main() {
